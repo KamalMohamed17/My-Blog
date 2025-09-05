@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.classList.remove('active');
                 if (btn.dataset.category === 'all') btn.classList.add('active');
             });
-            renderPosts();
+            getPostsPerPage();
         });
     }
 });
@@ -134,27 +134,32 @@ function getVisiblePosts() {
         : categories[currentCategory];
 }
 
-function renderPosts() {
-    const allPosts = getVisiblePosts();
-    const start = (currentPage - 1) * postsPerPage;
-    const end = start + postsPerPage;
-    const postsToShow = allPosts.slice(start, end);
-
-        postsContainer.innerHTML = postsToShow.map(post => `
-            <div class="post-card">
+function renderPosts(pos) {
+    return pos.map(post => `
+        <div class="post-card">
                 <img class="post-image" src="${post.image}" alt="${post.title}" style="width:100%;height:180px;object-fit:cover;border-radius:12px 12px 0 0;">
                 <div class="post-content">
                     <div class="post-title">${post.title}</div>
                     <div class="post-description">${post.description}</div>
                     <div class="post-bottom-row">
-                        <div class="post-account"><span class="avatar-circle"><i data-lucide="user"></i></span> <span class="account-name">${post.account}</span></div>
+                        <div class="post-account"><span class="avatar-circle"><i class='avatar-icon' data-lucide="user"></i></span> <span class="account-name">${post.account}</span></div>
                         <div class="post-footer-date">${post.date}</div>
                     </div>
                 </div>
             </div>
         `).join("");
+}
+
+function getPostsPerPage() {
+    const allPosts = getVisiblePosts();
+    const start = (currentPage - 1) * postsPerPage;
+    const end = start + postsPerPage;
+    const postsToShow = allPosts.slice(start, end);
+
+        postsContainer.innerHTML = renderPosts(postsToShow);
+            
     if (window.lucide) {
-      lucide.createIcons();
+        lucide.createIcons();
     }
 
     renderPaginationDots(allPosts.length);
@@ -172,7 +177,7 @@ function renderPaginationDots(totalPosts) {
 
         dot.addEventListener("click", () => {
             currentPage = i;
-            renderPosts();
+            getPostsPerPage();
         });
 
         paginationContainer.appendChild(dot);
@@ -191,12 +196,11 @@ filterBtns.forEach(btn => {
         btn.classList.add("active");
         currentCategory = btn.dataset.category;
         currentPage = 1;
-        // If search bar is not empty, trigger search logic
         if (searchBar && searchBar.value.trim()) {
             searchBar.dispatchEvent(new Event('input'));
         } else {
             paginationContainer.style.display = '';
-            renderPosts();
+            getPostsPerPage();
         }
     });
 });
@@ -204,7 +208,7 @@ filterBtns.forEach(btn => {
 prevBtn.addEventListener("click", () => {
     if (currentPage > 1) {
         currentPage--;
-        renderPosts();
+        getPostsPerPage();
     }
 });
 
@@ -212,7 +216,7 @@ nextBtn.addEventListener("click", () => {
     const totalPages = Math.ceil(getVisiblePosts().length / postsPerPage);
     if (currentPage < totalPages) {
         currentPage++;
-        renderPosts();
+        getPostsPerPage();
     }
 });
 
@@ -220,56 +224,51 @@ nextBtn.addEventListener("click", () => {
 const searchBar = document.getElementById('search-bar');
 if (searchBar) {
     searchBar.addEventListener('input', function() {
-        const query = searchBar.value.trim();
+        const query = searchBar.value.trim().toLowerCase();
         if (!query) {
             paginationContainer.style.display = '';
-            renderPosts();
+            getPostsPerPage();
             return;
         }
-    const dateRegex = /^(\d{1,2})\/(\d{1,2})$/;
-        let match = query.match(dateRegex);
-        let filteredPosts = getVisiblePosts();
-        if (match) {
-            let [_, d, m] = match;
-            d = d.padStart(2, '0');
-            m = m.padStart(2, '0');
-            filteredPosts = filteredPosts.filter(post => {
-                const [pd, pm] = post.date.split('/');
-                return pd === d && pm.startsWith(m);
-            });
-        }
-        postsContainer.innerHTML = filteredPosts.map(post => `
-            <div class="post-card">
-                <img class="post-image" src="${post.image}" alt="${post.title}" style="width:100%;height:180px;object-fit:cover;border-radius:12px 12px 0 0;">
-                <div class="post-content">
-                    <div class="post-title">${post.title}</div>
-                    <div class="post-description">${post.description}</div>
-                    <div class="post-account"><span class="avatar-circle"><i data-lucide="user"></i></span> <span class="account-name">${post.account}</span></div>
-                </div>
-                <div class="post-footer">${post.date}</div>
-            </div>
-        `).join("");
-            postsContainer.innerHTML = filteredPosts.map(post => `
-                <div class="post-card">
-                    <img class="post-image" src="${post.image}" alt="${post.title}" style="width:100%;height:180px;object-fit:cover;border-radius:12px 12px 0 0;">
-                    <div class="post-content">
-                        <div class="post-title">${post.title}</div>
-                        <div class="post-description">${post.description}</div>
-                        <div class="post-author-bottom">
-                          <div class="post-account"><span class="avatar-circle"><i data-lucide="user"></i></span> <span class="account-name">${post.account}</span></div>
-                        </div>
-                        <div class="post-footer">${post.date}</div>
-                    </div>
-                </div>
-            `).join("");
+        let filteredPosts = getVisiblePosts().filter(post => {
+            const author = post.account;
+            
+            const [day, month, year] = post.date.split('/');
+            
+            const description = post.description.toLowerCase();
+            
+            const title = post.title.toLowerCase();
+            if (/^\d+$/.test(query)) {
+                return day.includes(query) || month.includes(query) || year.includes(query);
+            }
+            if (author.toLowerCase().startsWith(query.toLowerCase())) {
+                return true;
+            }
+
+            const anyAuthorStartsWith = getVisiblePosts().some(p => p.account.toLowerCase().startsWith(query.toLowerCase()));
+
+            if (anyAuthorStartsWith) {
+                return false;
+            }
+
+            if (description.includes(query) || title.includes(query)) {
+                return true;
+            }
+
+            if (post.date.includes(query)) {
+                return true;
+            }
+            return false;
+        });
+        postsContainer.innerHTML = renderPosts(filteredPosts);
         if (window.lucide) {
-          lucide.createIcons();
+            lucide.createIcons();
         }
         paginationContainer.style.display = '';
     });
 }
 
-renderPosts();
+getPostsPerPage();
 
 // --- Search Bar Toggle Logic ---
 window.addEventListener('DOMContentLoaded', function() {
