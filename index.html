@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <div><h1 id="blog-title" style="cursor:pointer;">My Blog</h1></div>
+    <div>
+        <nav>
+            <div class="filter-dropdown">
+                <button id="filter-toggle" aria-label="Open filters" class="filter-icon-btn" style="background:none;border:none;cursor:pointer;padding:0 8px 0 0;outline:none;">
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <div id="filter-list" class="filter-container" style="display:none;">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <button class="filter-btn" data-category="tech">Tech</button>
+                    <button class="filter-btn" data-category="travel">Travel</button>
+                    <button class="filter-btn" data-category="food">Food</button>
+                    <button class="filter-btn" data-category="lifestyle">Lifestyle</button>
+                </div>
+            </div>
+            <div class="search-bar-container">
+                <button id="search-toggle" aria-label="Open search" style="background:none;border:none;cursor:pointer;padding:0 8px 0 0;outline:none;">
+                    <svg id="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="2"/><line x1="16.3" y1="16.3" x2="21" y2="21" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <input type="text" id="search-bar" placeholder="Search posts...">
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div id="posts-container" class="posts-grid"></div>
+    <div class="pagination">
+        <button id="prev-btn" class="arrow-btn">&lt;</button>
+        <div class="pagination-dots" id="pagination"></div>
+        <button id="next-btn" class="arrow-btn">&gt;</button>
+    </div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
