@@ -1,5 +1,25 @@
+.avatar-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a8cff 40%, #e2e2e2 100%);
+    margin-right: 7px;
+    vertical-align: middle;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    font-size: 1rem;
+    color: #23272f;
+    
+}
+.avatar-circle i[data-lucide] {
+    width: 9px;
+}
+
 .post-description {
-    margin: 8px 0 4px 0;
+    margin: 24px 0 4px 0;
     font-size: 1rem;
     color: #222;
     background: rgba(255,255,255,0.85);
@@ -7,14 +27,30 @@
     padding: 2px 6px;
     display: inline-block;
 }
-.post-account {
+.post-bottom-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+.post-footer-date {
     font-size: 0.97rem;
     color: #23272f;
-    margin-bottom: 4px;
     background: rgba(255,255,255,0.85);
     border-radius: 6px;
     padding: 2px 6px;
-    display: inline-block;
+    font-weight: 500;
+}
+.post-account {
+    font-size: 0.97rem;
+    color: #23272f;
+        background: rgba(255,255,255,0.85);
+        border-radius: 6px;
+        padding: 2px 6px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 0;
 }
 .account-name {
     font-weight: 600;

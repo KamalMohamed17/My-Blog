@@ -140,17 +140,22 @@ function renderPosts() {
     const end = start + postsPerPage;
     const postsToShow = allPosts.slice(start, end);
 
-    postsContainer.innerHTML = postsToShow.map(post => `
-        <div class="post-card">
-            <img class="post-image" src="${post.image}" alt="${post.title}" style="width:100%;height:180px;object-fit:cover;border-radius:12px 12px 0 0;">
-            <div class="post-content">
-                <div class="post-title">${post.title}</div>
-                <div class="post-description">${post.description}</div>
-                <div class="post-account">👤 <span class="account-name">${post.account}</span></div>
+        postsContainer.innerHTML = postsToShow.map(post => `
+            <div class="post-card">
+                <img class="post-image" src="${post.image}" alt="${post.title}" style="width:100%;height:180px;object-fit:cover;border-radius:12px 12px 0 0;">
+                <div class="post-content">
+                    <div class="post-title">${post.title}</div>
+                    <div class="post-description">${post.description}</div>
+                    <div class="post-bottom-row">
+                        <div class="post-account"><span class="avatar-circle"><i data-lucide="user"></i></span> <span class="account-name">${post.account}</span></div>
+                        <div class="post-footer-date">${post.date}</div>
+                    </div>
+                </div>
             </div>
-            <div class="post-footer">${post.date}</div>
-        </div>
-    `).join("");
+        `).join("");
+    if (window.lucide) {
+      lucide.createIcons();
+    }
 
     renderPaginationDots(allPosts.length);
     updateArrowButtons(allPosts.length);
@@ -239,11 +244,27 @@ if (searchBar) {
                 <div class="post-content">
                     <div class="post-title">${post.title}</div>
                     <div class="post-description">${post.description}</div>
-                    <div class="post-account">👤 <span class="account-name">${post.account}</span></div>
+                    <div class="post-account"><span class="avatar-circle"><i data-lucide="user"></i></span> <span class="account-name">${post.account}</span></div>
                 </div>
                 <div class="post-footer">${post.date}</div>
             </div>
         `).join("");
+            postsContainer.innerHTML = filteredPosts.map(post => `
+                <div class="post-card">
+                    <img class="post-image" src="${post.image}" alt="${post.title}" style="width:100%;height:180px;object-fit:cover;border-radius:12px 12px 0 0;">
+                    <div class="post-content">
+                        <div class="post-title">${post.title}</div>
+                        <div class="post-description">${post.description}</div>
+                        <div class="post-author-bottom">
+                          <div class="post-account"><span class="avatar-circle"><i data-lucide="user"></i></span> <span class="account-name">${post.account}</span></div>
+                        </div>
+                        <div class="post-footer">${post.date}</div>
+                    </div>
+                </div>
+            `).join("");
+        if (window.lucide) {
+          lucide.createIcons();
+        }
         paginationContainer.style.display = '';
     });
 }
